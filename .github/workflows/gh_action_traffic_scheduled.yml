@@ -1,0 +1,29 @@
+name: Fetch and Store GitHub Traffic Data to DynamoDB
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at midnight every day
+
+jobs:
+  fetchAndStoreTrafficData:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install Dependencies
+      run: |
+        pip install boto3
+        pip install requests
+
+    - name: Fetch Traffic Data and Update DynamoDB
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: 'us-west-2' # Replace with your AWS region
+        MY_PERSONAL_ACCESS_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }} # Using the PAT from secrets b/c GITHUB_TOKEN doesn't have enough permissions, even when you add write-all to jobs
+      run: python gh_traffic_to_dynamodb.py
