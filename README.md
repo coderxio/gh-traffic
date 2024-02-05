@@ -15,3 +15,9 @@ For MDT (a.k.a. ForgeRx), we're using the following:
 1. GitHub Actions: automates collection of traffic data
 2. AWS DynamoDB, Glue, S3: a hub for ELT/ETL and storage
 3. PowerBI: for visualizations
+
+# How It Works
+1. You need to set up access keys/tokens for AWS & GitHub: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, {GITHUB} PERSONAL_ACCESS_TOKEN. Once you have these, navigate to your repo -> Settings -> Secrets & Variables -> Secrets -> Add New repository secret. 
+2. The gh_traffic_to_dynamodb.py script fetches GitHub Traffic data from the GitHub API and writes the output to DynamoDB.
+3. Create an Action Worfklow: In your repo, Navigate to Actions -> Select New Workflow -> add gh_action_traffic_scheduled.yml. This schedules the automated workflow to run the pyscript.
+4. Most of the steps involving AWS & PowerBI are low-code processes. However, the AWS Glue ETL Job involved a series of transformations in pyspark. This was the most expensive part of the development process since we used the UI, and the lovely UI-generated pyscript is a bonus prize: mdt-glue-etl-job.py. If you're interested in the low-code steps, please visit [this Medium article](https://medium.com/@kristentaytok/how-i-built-it-github-traffic-data-pipeline-01c2e3486a5d) for details! 
